@@ -1,9 +1,9 @@
-# account/views.py
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm, CustomUserUpdateForm
+from classes.models import Registration
 
 def register(request):
     if request.method == 'POST':
@@ -25,7 +25,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('dashboard')  # Change to your dashboard URL
+                return redirect('home')  # Change to your dashboard URL
     else:
         form = AuthenticationForm()
     return render(request, 'account/login.html', {'form': form})
@@ -36,13 +36,23 @@ def update_profile(request):
         form = CustomUserUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect('dashboard')  # Change to your dashboard URL
+            return redirect('profile_update')  # Change to your dashboard URL
     else:
         form = CustomUserUpdateForm(instance=request.user)
     return render(request, 'account/update_profile.html', {'form': form})
 
 
 @login_required
-def dashboard(request):
-    return render(request, 'account/dashboard.html')  # You can create this template later
+def my_courses(request):
+    registrations = Registration.objects.filter(user = request.user)
+    context ={
+        "registrations":registrations
+    }
+    return render(request, 'account/my_course.html',context)  # You can create this template later
+
+
+def logout_view(request):
+    logout(request)  # Logs out the user associated with the request
+    return redirect('home')  # Redirects to the 'home' page (replace 'home' with your URL name)
+
 

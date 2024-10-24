@@ -2,7 +2,11 @@ from django.db import models
 from django.utils.text import slugify
 from account.models import CustomUser
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.utils.text import slugify
+from datetime import datetime, timedelta 
 User = get_user_model()
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -22,8 +26,10 @@ class Course(models.Model):
     category = models.ForeignKey('Category', on_delete=models.CASCADE, null=True)
     lecturer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='lectured_courses')
     likes = models.ManyToManyField(User, related_name='liked_courses', blank=True)  # To track likes
-    date = models.DateField()
-    time = models.TimeField()
+    start_date = models.DateField()
+    start_time = models.TimeField()
+    end_date = models.DateField(null=True)
+    end_time = models.TimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)  # New slug field
 
@@ -31,6 +37,14 @@ class Course(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+        
+    def clean(self):
+        super().clean()
+        if self.start_time and self.end_time:
+            start_datetime = datetime.combine(self.start_date, self.start_time)
+            end_datetime = datetime.combine(self.end_date, self.end_time)
+            if end_datetime <= start_datetime + timedelta(minutes=30):
+                raise ValidationError("End time must be at least 30 minutes greater than the start time.")
 
     def __str__(self):
         return self.title

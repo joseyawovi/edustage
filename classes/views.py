@@ -3,9 +3,12 @@ from .models import Course, Registration
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponse
-
+from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from datetime import datetime
+import pytz
 
 def class_list(request):
     courses = Course.objects.all()
@@ -16,47 +19,44 @@ def course_list(request):
     
     return render(request,"classes/course_list.html",{'courses': courses})
 
-def register_for_class(request, slug):
-    selected_course = Course.objects.get(slug=slug)
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        # Send confirmation email (optional)
-        send_mail(
-            'Class Registration Confirmation',
-            f'Thank you for registering for {selected_course.title}. Join here: {selected_course.google_meet_link}',
-            settings.DEFAULT_FROM_EMAIL,
-            [email],
-        )
-        # Redirect user to Google Meet link
-        return redirect(selected_course.google_meet_link)
+def course_detail(request, slug):
+    course = Course.objects.get(slug=slug)
     
-    return render(request, 'classes/class_detail.html', {'course': selected_course})
+    # Get the current time in server's timezone and convert to local timezone
+    now = timezone.now()
+    local_tz = pytz.timezone('Asia/Kolkata')  # India Standard Time
+    local_now = now.astimezone(local_tz)
 
-def course_detail(request,slug):
-    course = Course.objects.prefetch_related('outlines__sub_outlines').get(slug=slug)
-    
-    return render(request, 'classes/course_detail.html', {'course': course})
+    # Combine start and end datetime for comparison in local timezone
+    course_start_datetime = datetime.combine(course.start_date, course.start_time).astimezone(local_tz)
+    course_end_datetime = datetime.combine(course.end_date, course.end_time).astimezone(local_tz) if course.end_date and course.end_time else None
+
+    if request.user.is_authenticated:
+        is_registered = Registration.objects.filter(user=request.user, course=course).exists()
+
+    context = {
+        'course': course,
+        'now': local_now,  # Now in local timezone
+        'is_registered': is_registered,
+        'course_start_datetime': course_start_datetime,
+        'course_end_datetime': course_end_datetime,
+    }
+
+    return render(request, 'classes/class_detail.html', context)
+
+
+def join_course(request, slug):
+    selected_course = Course.objects.get(slug=slug)
+    return redirect(selected_course.google_meet_link)
 
 def register_course(request, slug):
-    """Registers a user for a course.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
-        slug (str): The unique slug identifier for the course.
-
-    Returns:
-        HttpResponse: A response object indicating success or failure.
-
-    Raises:
-        Http404: If the course with the provided slug is not found.
-        PermissionError: If the user is not authenticated.
-    """
 
     try:
         course = Course.objects.get(slug=slug)
     except Course.DoesNotExist:
         return HttpResponseNotFound("Course not found.")
-
+    
+    email = request.user.email
     if not request.user.is_authenticated:
         raise PermissionError("You must be logged in to register for a course.")
 
@@ -66,12 +66,17 @@ def register_course(request, slug):
 
     new_registration = Registration(course=course, user=request.user)
     new_registration.save()
-
+    send_mail(
+            'Class Registration Confirmation',
+            f'Thank you for registering for {new_registration.course.title}. Join here: {new_registration.course.google_meet_link}',
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+        )
     # Choose success message/redirect based on your application logic
     success_message = "You've successfully registered for the course!"
     # return HttpResponse(success_message)  # For a simple success message
 
-    return redirect("dashboard")  # For redirecting to the dashboard
+    return redirect("my_courses")  # For redirecting to the dashboard
 
 
 

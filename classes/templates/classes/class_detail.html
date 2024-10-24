@@ -1,4 +1,4 @@
-{% extends "classes/base.html" %}   
+{% extends "classes/base.html" %}
 
 {% block header %}
 {% include "classes/partials/class_detail_header.html" %}
@@ -58,8 +58,7 @@
                             {% endfor %}
                         </ul>
                     </div>
-                    
-                    
+
                 </div>
             </div>
 
@@ -68,13 +67,13 @@
                     <li>
                         <a class="justify-content-between d-flex" href="#">
                             <p>Trainer’s Name</p>
-                            <span class="or">George Mathews</span>
+                            <span class="or">{{course.lecturer.first_name}} {{course.lecturer.last_name}}</span>
                         </a>
                     </li>
                     <li>
                         <a class="justify-content-between d-flex" href="#">
                             <p>Course Fee </p>
-                            <span>$230</span>
+                            <span>${{course.price}}</span>
                         </a>
                     </li>
                     <li>
@@ -85,12 +84,23 @@
                     </li>
                     <li>
                         <a class="justify-content-between d-flex" href="#">
-                            <p>Schedule </p>
-                            <span>2.00 pm to 4.00 pm</span>
+                            <p>Schedule:</p>
+                            <span> {{course_start_datetime }} to {{course_end_datetime}}</span>
                         </a>
                     </li>
                 </ul>
-                <a href="{% url 'register_course' course.slug%}" class="primary-btn2 text-uppercase enroll rounded-0 text-white">Enroll the course</a>
+                {% if is_registered %}
+                {% if now < course_start_datetime %}
+                <span class="primary-btn2 text-uppercase enroll rounded-0 text-white">Coming Soon</span>
+                {% elif now > course_end_datetime %}
+                <span class="primary-btn2 text-uppercase enroll rounded-0 text-white">Course Completed</span>
+                {% else %}
+                <a href="{% url 'join_course' course.slug %}" class="primary-btn2 text-uppercase enroll rounded-0 text-white">Join the Course</a>
+                {% endif %}
+                {% else %}
+                <a href="{% url 'register_course' course.slug %}"
+                    class="primary-btn2 text-uppercase enroll rounded-0 text-white">Enroll in the Course</a>
+                {% endif %}
 
                 <h4 class="title">Reviews</h4>
                 <div class="content">
@@ -116,7 +126,7 @@
                                     <i class="ti-star checked"></i>
                                     <i class="ti-star"></i>
                                     <i class="ti-star"></i>
-                                    
+
                                 </div>
                                 <span>Outstanding</span>
                             </div>
@@ -221,6 +231,5 @@
 </section>
 
 <!--================ End Course Details Area =================-->
-
 
 {% endblock content %}

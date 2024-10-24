@@ -110,17 +110,30 @@
                   role="button"
                   aria-haspopup="true"
                   aria-expanded="false"
-                  >Dashboard</a
-                > 
+                  >Your Dashboard</a
+                >
                 <ul class="dropdown-menu">
-                  <li class="nav-item">
-                    <a class="nav-link" href="blog.html" style="color: blue;">Blog</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="single-blog.html"
-                      >Blog Details</a
-                    >
-                  </li>
+                  {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url "update_profile" %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url "my_courses" %}">My Courses</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url "logout" %}">Logout</a>
+                    </li>
+                  {% else %}
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url "login" %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="register">Signup</a>
+                    </li>
+                  {% endif %}
+                </ul>
+                
+                  
                 </ul>
               </li>
             </ul>

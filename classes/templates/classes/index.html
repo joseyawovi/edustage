@@ -17,7 +17,7 @@
                         </h2>
                         <div>
                             <a href="#" class="primary-btn2 mb-3 mb-sm-0">learn more</a>
-                            <a href="#" class="primary-btn ml-sm-3 ml-0">see course</a>
+                            <a href="{% url "course_list" %}" class="primary-btn ml-sm-3 ml-0">see course</a>
                         </div>
                     </div>
                 </div>
@@ -106,26 +106,27 @@
                         class="col-lg-4 col-md-6 col-sm-12 mb-4 single-course-wrapper {% if forloop.counter > 6 %}d-none more-courses{% endif %}">
                         <div class="single_course">
                             <div class="course_head">
-                                <a href="{% url 'register_for_class' course.slug %}">
+                                <a href="{% url 'course_detail' course.slug %}">
                                     <img class="img-fluid" src="{{course.image.url}}" alt="{{ course.title }}" />
                                 </a>
                             </div>
                             <div class="course_content">
-                                <span class="price">${{ course.price }}</span>
+                                {% comment %} <span class="price">${{ course.price }}</span> {% endcomment %}
                                 <span class="tag mb-4 d-inline-block">{{ course.category.name }}</span>
                                 <h4 class="mb-3">
-                                    <a href="{% url 'register_for_class' course.slug %}">{{ course.title }}</a>
+                                    <a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a>
                                 </h4>
                                 <p>{{ course.description|truncatewords:20 }}</p>
 
                                 <div
                                     class="course_meta d-flex justify-content-lg-between align-items-lg-center flex-lg-row flex-column mt-4">
-                                    <div class="authr_meta d-flex align-items-center">
+                                    {% comment %} <div class="authr_meta d-flex align-items-center">
                                         <img src="{{ course.lecturer.profile_picture.url }}"
-                                            alt="{{ course.lecturer.name }}" class="rounded-circle"
+                                            alt="{{ course.lecturer.first_name }}" class="rounded-circle"
                                             style="width: 40px; height: 40px;">
-                                        <span class="ml-2">{{ course.lecturer.name }}</span>
-                                    </div>
+                                        <span class="ml-2">{{ course.lecturer.first_name }}
+                                            {{ course.lecturer.last_name }}</span>
+                                    </div> {% endcomment %}
                                     <div class="mt-lg-0 mt-3">
                                         <span class="meta_info mr-4">
                                             <i class="ti-user mr-2"></i>{{ course.enrollments }} students
