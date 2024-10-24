@@ -56,9 +56,11 @@ def register_course(request, slug):
     except Course.DoesNotExist:
         return HttpResponseNotFound("Course not found.")
     
-    email = request.user.email
+    
     if not request.user.is_authenticated:
         raise PermissionError("You must be logged in to register for a course.")
+    else:
+        email = request.user.email
 
     # Check for existing registration (optional)
     if Registration.objects.filter(course=course, user=request.user).exists():
