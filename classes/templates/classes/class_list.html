@@ -13,7 +13,7 @@
                 <h2>{{ class.title }}</h2>
                 <p>Date: {{ class.date }}</p>
                 <p>Time: {{ class.time }}</p>
-                <a href="{% url 'register_for_class' class.id %}">Join Class</a>
+                <a href="{% url 'register_course' class.id %}">Join Class</a>
             </li>
         {% empty %}
             <li>No classes are available at the moment.</li>
