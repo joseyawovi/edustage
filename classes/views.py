@@ -6,6 +6,10 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseNotFound
+from django.contrib import messages
+from django.db import transaction
+from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from datetime import datetime
 import pytz
@@ -19,8 +23,14 @@ def course_list(request):
     
     return render(request,"classes/course_list.html",{'courses': courses})
 
+from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
+import pytz
+from datetime import datetime
+from django.http import HttpResponseNotFound
+
 def course_detail(request, slug):
-    course = Course.objects.get(slug=slug)
+    course = get_object_or_404(Course, slug=slug)
     
     # Get the current time in server's timezone and convert to local timezone
     now = timezone.now()
@@ -31,55 +41,62 @@ def course_detail(request, slug):
     course_start_datetime = datetime.combine(course.start_date, course.start_time).astimezone(local_tz)
     course_end_datetime = datetime.combine(course.end_date, course.end_time).astimezone(local_tz) if course.end_date and course.end_time else None
 
+    is_registered = False
+    
+    # Check if the user is authenticated and registered for the course
     if request.user.is_authenticated:
         is_registered = Registration.objects.filter(user=request.user, course=course).exists()
 
+    # Prepare context for rendering
     context = {
         'course': course,
-        'now': local_now,  # Now in local timezone
+        'now': local_now,  # Current time in local timezone
         'is_registered': is_registered,
         'course_start_datetime': course_start_datetime,
         'course_end_datetime': course_end_datetime,
     }
 
+    # Render the course detail page
     return render(request, 'classes/class_detail.html', context)
+
 
 
 def join_course(request, slug):
     selected_course = Course.objects.get(slug=slug)
     return redirect(selected_course.google_meet_link)
 
+@login_required
 def register_course(request, slug):
-
     try:
         course = Course.objects.get(slug=slug)
     except Course.DoesNotExist:
         return HttpResponseNotFound("Course not found.")
-    
-    
-    if not request.user.is_authenticated:
-        raise PermissionError("You must be logged in to register for a course.")
-    else:
-        email = request.user.email
 
-    # Check for existing registration (optional)
+    # Check for existing registration
     if Registration.objects.filter(course=course, user=request.user).exists():
-        return HttpResponse("You are already registered for this course.")
+        messages.error(request, "You are already registered for this course.")
+        return redirect('course_detail', slug=slug)  # Assuming you have this URL name for the course detail page.
 
-    new_registration = Registration(course=course, user=request.user)
-    new_registration.save()
-    send_mail(
-            'Class Registration Confirmation',
-            f'Thank you for registering for {new_registration.course.title}. Join here: {new_registration.course.google_meet_link}',
-            settings.DEFAULT_FROM_EMAIL,
-            [email],
-        )
-    # Choose success message/redirect based on your application logic
-    success_message = "You've successfully registered for the course!"
-    # return HttpResponse(success_message)  # For a simple success message
+    # Start a transaction to ensure data integrity
+    with transaction.atomic():
+        new_registration = Registration(course=course, user=request.user)
+        new_registration.save()
 
-    return redirect("my_courses")  # For redirecting to the dashboard
+        # Send confirmation email
+        try:
+            send_mail(
+                'Class Registration Confirmation',
+                f'Thank you for registering for {new_registration.course.title}. Join here: {new_registration.course.google_meet_link}',
+                settings.DEFAULT_FROM_EMAIL,
+                [request.user.email],
+            )
+        except Exception as e:
+            messages.warning(request, "Registration successful but email could not be sent.")
+            return redirect('course_detail', slug=slug)
 
+    # Success
+    messages.success(request, "You've successfully registered for the course!")
+    return redirect('course_detail', slug=slug)
 
 
 from django.http import JsonResponse

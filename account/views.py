@@ -25,6 +25,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
+                next_url = request.POST.get('next', 'default_redirect_url')
                 return redirect('home')  # Change to your dashboard URL
     else:
         form = AuthenticationForm()

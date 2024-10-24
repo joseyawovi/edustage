@@ -98,7 +98,7 @@
                 <a href="{% url 'join_course' course.slug %}" class="primary-btn2 text-uppercase enroll rounded-0 text-white">Join the Course</a>
                 {% endif %}
                 {% else %}
-                <a href="{% url 'register_course' course.slug %}"
+                <a href="{% url 'register_course' course.slug %} name="next" value="{{ next }}""
                     class="primary-btn2 text-uppercase enroll rounded-0 text-white">Enroll in the Course</a>
                 {% endif %}
 
