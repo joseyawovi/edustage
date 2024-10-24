@@ -46,7 +46,7 @@
                         class="col-lg-4 col-md-6 col-sm-12 mb-4 single-course-wrapper {% if forloop.counter > 6 %}d-none more-courses{% endif %}">
                         <div class="single_course">
                             <div class="course_head">
-                                <a href="{% url 'register_course' course.slug %}">
+                                <a href="{% url 'course_detail' course.slug %}">
                                     <img class="img-fluid" src="{{course.image.url}}" alt="{{ course.title }}" />
                                 </a>
                             </div>
@@ -54,7 +54,7 @@
                                 <span class="price">${{ course.price }}</span>
                                 <span class="tag mb-4 d-inline-block">{{ course.category.name }}</span>
                                 <h4 class="mb-3">
-                                    <a href="{% url 'register_course' course.slug %}">{{ course.title }}</a>
+                                    <a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a>
                                 </h4>
                                 <p>{{ course.description|truncatewords:20 }}</p>
 
