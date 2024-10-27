@@ -53,6 +53,34 @@
                   </li>
               </ul>
           </li>
+          <li class="nav-item submenu dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+              aria-expanded="false">Your Dashboard</a>
+            <ul class="dropdown-menu">
+              {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url "update_profile" %}">Profile</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url "my_courses" %}">My Courses</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url "change_password" %}">Change Password</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url "logout" %}">Logout</a>
+              </li>
+             
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url "login" %}">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url "signup" %}">Signup</a>
+              </li>
+              {% endif %}
+            </ul>
+          </li>
             <li class="nav-item">
               <a class="nav-link" href="contact.html">Contact</a>
             </li>
@@ -61,34 +89,7 @@
                 <i class="ti-search"></i>
               </a>
             </li>
-            <li class="nav-item submenu dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                aria-expanded="false">Your Dashboard</a>
-              <ul class="dropdown-menu">
-                {% if request.user.is_authenticated %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url "update_profile" %}">Profile</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url "my_courses" %}">My Courses</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url "change_password" %}">Change Password</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url "logout" %}">Logout</a>
-                </li>
-               
-                {% else %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url "login" %}">Login</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url "signup" %}">Signup</a>
-                </li>
-                {% endif %}
-              </ul>
-            </li>
+            
           </ul>
         </div>
       </div>

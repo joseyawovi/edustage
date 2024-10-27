@@ -21,9 +21,6 @@ LOGIN_URL = '/account/login/'
 # Application definition
 
 INSTALLED_APPS = [
-    'crispy_forms',
-    'crispy_bootstrap4',
-    'django_countries',
     'account',
     'classes',
     'django.contrib.admin',
@@ -33,7 +30,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
