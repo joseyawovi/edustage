@@ -1,0 +1,117 @@
+{% extends "classes/base.html" %}
+
+{% block header %}
+    {% include "classes/partials/class_detail_header.html" %}
+{% endblock header %}
+
+{% block content %}
+<div class="section_gap registration_area d-flex justify-content-center">
+    <div class="container">
+        <div class="row justify-content-center">  <!-- Removed mt-5 here -->
+            <div class="col-lg-6 col-md-8 col-sm-10">
+                <div class="register_form text-center p-4" style="background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+                    <h3 style="font-size: 28px; color: #333;">Register</h3>
+                    <p style="font-size: 18px; color: #555;">Please fill in the details below to create an account</p>
+                    <form class="form_area" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+
+                            <!-- First Name and Last Name on the same row -->
+                            <div class="col-lg-6 form_group mb-2">
+                                {{ form.first_name.label_tag }} <span class="text-danger">*</span>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="errorlist text-danger">
+                                        {% for error in form.first_name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-lg-6 form_group mb-2">
+                                {{ form.last_name.label_tag }} <span class="text-danger">*</span>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="errorlist text-danger">
+                                        {% for error in form.last_name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-lg-12 form_group mb-2">
+                                {{ form.email.label_tag }} <span class="text-danger">*</span>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="errorlist text-danger">
+                                        {% for error in form.email.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Country -->
+                            <div class="col-lg-12 form_group mb-2">
+                                {{ form.country.label_tag }} <span class="text-danger">*</span>
+                                {{ form.country }}
+                                {% if form.country.errors %}
+                                    <div class="errorlist text-danger">
+                                        {% for error in form.country.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Password and Confirm Password on the same row -->
+                            <div class="col-lg-6 form_group mb-2">
+                                {{ form.password1.label_tag }} <span class="text-danger">*</span>
+                                {{ form.password1 }}
+                                {% if form.password1.errors %}
+                                    <div class="errorlist text-danger">
+                                        {% for error in form.password1.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-lg-6 form_group mb-2">
+                                {{ form.password2.label_tag }} <span class="text-danger">*</span>
+                                {{ form.password2 }}
+                                {% if form.password2.errors %}
+                                    <div class="errorlist text-danger">
+                                        {% for error in form.password2.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Non-field errors (general form errors) -->
+                            {% if form.non_field_errors %}
+                                <div class="col-lg-12">
+                                    <div class="errorlist text-danger">
+                                        {% for error in form.non_field_errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Submit Button -->
+                            <div class="col-lg-12 text-center mt-3">
+                                <button class="primary-btn" type="submit">Register</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

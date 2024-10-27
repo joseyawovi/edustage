@@ -4,9 +4,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('classes.urls')),  # Default to the class list as the homepage
+    path('', include('classes.urls')),
     path('account/', include('account.urls')),
+    path('admin/', admin.site.urls),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

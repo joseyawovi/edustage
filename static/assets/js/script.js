@@ -67,3 +67,11 @@
     });
 
 
+
+    // signup
+    $(document).ready(function() {
+        $('#id_phone_code').select2({
+            placeholder: "Select your country code",
+            allowClear: true
+        });
+    });

@@ -21,6 +21,9 @@ LOGIN_URL = '/account/login/'
 # Application definition
 
 INSTALLED_APPS = [
+    'crispy_forms',
+    'crispy_bootstrap4',
+    'django_countries',
     'account',
     'classes',
     'django.contrib.admin',
@@ -30,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -44,6 +48,14 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'edustage.urls'
 # settings.py
 AUTH_USER_MODEL = 'account.CustomUser'
+
+# settings.py
+AUTHENTICATION_BACKENDS = [
+    'account.backends.EmailBackend', 
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
 
 TEMPLATES = [
     {
@@ -78,12 +90,14 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
+# settings.py
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {'min_length': 8},
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -92,6 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 
 # Internationalization
