@@ -1,0 +1,235 @@
+{% extends "classes/base.html" %}
+
+{% block header %}
+{% include "classes/partials/class_detail_header.html" %}
+{% endblock header %}
+
+{% block content %}
+<!--================Home Banner Area =================-->
+<section class="banner_area">
+    <div class="banner_inner d-flex align-items-center">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="banner_content text-center">
+                        <h2>Course Details</h2>
+                        <div class="page_link">
+                            <a href="{% url "home" %}">Home</a>
+                            <a href="{% url "courses" %}">Courses</a>
+                            <a href="">{{course.title}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Home Banner Area =================-->
+
+<!--================ Start Course Details Area =================-->
+<section class="course_details_area section_gap">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 course_details_left">
+                <div class="main_image">
+                    <img class="img-fluid" src="{{course.image.url}}" alt="">
+                </div>
+                <div class="content_wrapper">
+                    <h4 class="title">Objectives</h4>
+                    <div class="content">
+                        {{course.description}}
+                    </div>
+
+                    <h4 class="title">Course Outline</h4>
+                    <div class="content">
+                        <ul class="course_list">
+                            {% for outline in course.outlines.all %}
+                            <li class="justify-content-between d-flex">
+                                <div>
+                                    <span class="toggle">{{ forloop.counter }}. {{ outline.title }}</span>
+                                    <ul class="sub_list">
+                                        {% for sub_outline in outline.sub_outlines.all %}
+                                        <li>{{ forloop.counter }}.{{ sub_outline.sub_title }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-lg-4 right-contents">
+                <ul>
+                    <li>
+                        <a class="justify-content-between d-flex" href="#">
+                            <p>Trainer’s Name</p>
+                            <span class="or">{{course.lecturer.first_name}} {{course.lecturer.last_name}}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="justify-content-between d-flex" href="#">
+                            <p>Course Fee </p>
+                            <span>${{course.price}}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="justify-content-between d-flex" href="#">
+                            <p>Available Seats </p>
+                            <span>15</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="justify-content-between d-flex" href="#">
+                            <p>Schedule:</p>
+                            <span> {{course_start_datetime }} to {{course_end_datetime}}</span>
+                        </a>
+                    </li>
+                </ul>
+                {% if is_registered %}
+                {% if now < course_start_datetime %}
+                <span class="primary-btn2 text-uppercase enroll rounded-0 text-white">Coming Soon</span>
+                {% elif now > course_end_datetime %}
+                <span class="primary-btn2 text-uppercase enroll rounded-0 text-white">Course Completed</span>
+                {% else %}
+                <a href="{% url 'join_course' course.slug %}" class="primary-btn2 text-uppercase enroll rounded-0 text-white">Join the Course</a>
+                {% endif %}
+                {% else %}
+                <a href="{% url 'register_course' course.slug %}"  name="next" value="{{ next }}"
+                    class="primary-btn2 text-uppercase enroll rounded-0 text-white">Enroll in the Course</a>
+                {% endif %}
+
+                <h4 class="title">Reviews</h4>
+                <div class="content">
+                    <div class="review-top row pt-40">
+                        <div class="col-lg-12">
+                            <h6 class="mb-15">Provide Your Rating</h6>
+                            <div class="d-flex flex-row reviews justify-content-between">
+                                <span>Quality</span>
+                                <div class="star">
+                                    <i class="ti-star checked"></i>
+                                    <i class="ti-star checked"></i>
+                                    <i class="ti-star checked"></i>
+                                    <i class="ti-star"></i>
+                                    <i class="ti-star"></i>
+                                </div>
+                                <span>Outstanding</span>
+                            </div>
+                            <div class="d-flex flex-row reviews justify-content-between">
+                                <span>Puncuality</span>
+                                <div class="star">
+                                    <i class="ti-star checked"></i>
+                                    <i class="ti-star checked"></i>
+                                    <i class="ti-star checked"></i>
+                                    <i class="ti-star"></i>
+                                    <i class="ti-star"></i>
+
+                                </div>
+                                <span>Outstanding</span>
+                            </div>
+                            <div class="d-flex flex-row reviews justify-content-between">
+                                <span>Quality</span>
+                                <div class="star">
+                                    <i class="ti-star checked"></i>
+                                    <i class="ti-star checked"></i>
+                                    <i class="ti-star checked"></i>
+                                    <i class="ti-star"></i>
+                                    <i class="ti-star"></i>
+                                </div>
+                                <span>Outstanding</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="feedeback">
+                        <h6>Your Feedback</h6>
+                        <textarea name="feedback" class="form-control" cols="10" rows="10"></textarea>
+                        <div class="mt-10 text-right">
+                            <a href="#" class="primary-btn2 text-right rounded-0 text-white">Submit</a>
+                        </div>
+                    </div>
+                    <div class="comments-area mb-30">
+                        <div class="comment-list">
+                            <div class="single-comment single-reviews justify-content-between d-flex">
+                                <div class="user justify-content-between d-flex">
+                                    <div class="thumb">
+                                        <img src="img/blog/c1.jpg" alt="">
+                                    </div>
+                                    <div class="desc">
+                                        <h5><a href="#">Emilly Blunt</a>
+                                            <div class="star">
+                                                <span class="ti-star checked"></span>
+                                                <span class="ti-star checked"></span>
+                                                <span class="ti-star checked"></span>
+                                                <span class="ti-star"></span>
+                                                <span class="ti-star"></span>
+                                            </div>
+                                        </h5>
+                                        <p class="comment">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+                                            eiusmod tempor incididunt ut labore et dolore.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comment-list">
+                            <div class="single-comment single-reviews justify-content-between d-flex">
+                                <div class="user justify-content-between d-flex">
+                                    <div class="thumb">
+                                        <img src="img/blog/c2.jpg" alt="">
+                                    </div>
+                                    <div class="desc">
+                                        <h5><a href="#">Elsie Cunningham</a>
+                                            <div class="star">
+                                                <span class="ti-star checked"></span>
+                                                <span class="ti-star checked"></span>
+                                                <span class="ti-star checked"></span>
+                                                <span class="ti-star"></span>
+                                                <span class="ti-star"></span>
+                                            </div>
+                                        </h5>
+                                        <p class="comment">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+                                            eiusmod tempor incididunt ut labore et dolore.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comment-list">
+                            <div class="single-comment single-reviews justify-content-between d-flex">
+                                <div class="user justify-content-between d-flex">
+                                    <div class="thumb">
+                                        <img src="img/blog/c3.jpg" alt="">
+                                    </div>
+                                    <div class="desc">
+                                        <h5><a href="#">Maria Luna</a>
+                                            <div class="star">
+                                                <span class="ti-star checked"></span>
+                                                <span class="ti-star checked"></span>
+                                                <span class="ti-star checked"></span>
+                                                <span class="ti-star"></span>
+                                                <span class="ti-star"></span>
+                                            </div>
+                                        </h5>
+                                        <p class="comment">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+                                            eiusmod tempor incididunt ut labore et dolore.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--================ End Course Details Area =================-->
+
+{% endblock content %}
