@@ -68,7 +68,7 @@ def register_course(request, slug):
         try:
             send_mail(
                 'Class Registration Confirmation',
-                f'Thank you for registering for {new_registration.course.title}. Join here: {new_registration.course.google_meet_link}',
+                f'Thank you for registering for {new_registration.course.title}. Join here the official Whatsapp group: https://chat.whatsapp.com/HxXZgzTu730CYVvz8d0uO0',
                 settings.DEFAULT_FROM_EMAIL,
                 [request.user.email],
             )
