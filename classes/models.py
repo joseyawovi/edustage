@@ -30,6 +30,7 @@ class Course(models.Model):
     start_time = models.TimeField()
     end_date = models.DateField(null=True)
     end_time = models.TimeField(null=True)
+    locked = models.BooleanField(default =True)
     created_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)  # New slug field
 

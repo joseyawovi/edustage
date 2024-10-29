@@ -89,6 +89,9 @@
                         </a>
                     </li>
                 </ul>
+                {% if course.locked %}
+                <span class="primary-btn2 text-uppercase enroll rounded-0 text-white">Locked Now</span>
+                {% else %}
                 {% if is_registered %}
                 {% if now < course_start_datetime %}
                 <span class="primary-btn2 text-uppercase enroll rounded-0 text-white">Coming Soon</span>
@@ -100,6 +103,7 @@
                 {% else %}
                 <a href="{% url 'register_course' course.slug %}"  name="next" value="{{ next }}"
                     class="primary-btn2 text-uppercase enroll rounded-0 text-white">Enroll in the Course</a>
+                {% endif %}
                 {% endif %}
 
                 <h4 class="title">Reviews</h4>
