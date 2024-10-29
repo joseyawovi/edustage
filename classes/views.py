@@ -66,12 +66,49 @@ def register_course(request, slug):
 
         # Send confirmation email
         try:
-            send_mail(
-                'Class Registration Confirmation',
-                f'Thank you for registering for {new_registration.course.title}. Join here the official Whatsapp group: https://chat.whatsapp.com/HxXZgzTu730CYVvz8d0uO0',
-                settings.DEFAULT_FROM_EMAIL,
-                [request.user.email],
-            )
+           send_mail(
+    subject='Confirmation de votre inscription à la classe',
+    message=f'''
+Bonjour {request.user.first_name},
+
+Félicitations et bienvenue à la formation {new_registration.course.title} ! Nous sommes ravis de vous compter parmi nous et nous sommes convaincus que vous ferez des progrès remarquables dans ce domaine passionnant.
+
+Pour rester informé et connecter avec les autres participants, nous vous invitons à rejoindre le groupe WhatsApp officiel de NeoFormation. Cliquez simplement sur ce lien pour rejoindre : [Groupe WhatsApp NeoFormation](https://chat.whatsapp.com/HxXZgzTu730CYVvz8d0uO0)
+
+### Détails du cours :
+- **Nom du cours** : {new_registration.course.title}
+- **Date de début** : {new_registration.course.start_date.strftime('%d %B %Y')}
+- **Heure** : {new_registration.course.start_time.strftime('%H:%M')} UTC
+
+Nous restons à votre disposition pour toute question. Préparez-vous à une expérience d'apprentissage enrichissante et dynamique !
+
+Cordialement,
+
+L'équipe NeoFormation
+''',
+    from_email=settings.DEFAULT_FROM_EMAIL,
+    recipient_list=[request.user.email],
+    html_message=f'''
+<p>Bonjour {request.user.first_name},</p>
+
+<p>Félicitations et bienvenue à la formation <strong>{new_registration.course.title}</strong> ! Nous sommes ravis de vous compter parmi nous et nous sommes convaincus que vous ferez des progrès remarquables dans ce domaine passionnant.</p>
+
+<p>Pour rester informé et connecter avec les autres participants, nous vous invitons à rejoindre le groupe WhatsApp officiel de NeoFormation. Cliquez simplement sur ce lien pour rejoindre : <a href="https://chat.whatsapp.com/HxXZgzTu730CYVvz8d0uO0">Groupe WhatsApp NeoFormation</a></p>
+
+<h3>Détails du cours :</h3>
+<ul>
+    <li><strong>Nom du cours</strong> : {new_registration.course.title}</li>
+    <li><strong>Date de début</strong> : {new_registration.course.start_date.strftime('%d %B %Y')}</li>
+    <li><strong>Heure</strong> : {new_registration.course.start_time.strftime('%H:%M')} UTC</li>
+</ul>
+
+<p>Nous restons à votre disposition pour toute question. Préparez-vous à une expérience d'apprentissage enrichissante et dynamique !</p>
+
+<p>Cordialement,</p>
+<p>L'équipe NeoFormation</p>
+''',
+)
+
         except Exception as e:
             messages.warning(request, "Registration successful but email could not be sent.")
             return redirect('course_detail', slug=slug)
