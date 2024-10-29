@@ -44,7 +44,7 @@
                                 </li>
                             </ul>
                         </li> {% endcomment %}
-                        <li class="nav-item submenu dropdown">
+                        {% comment %} <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-haspopup="true" aria-expanded="false">Languages</a>
                             <ul class="dropdown-menu">
@@ -55,7 +55,7 @@
                                     <a class="nav-link" href="single-blog.html">English</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> {% endcomment %}
                         <li class="nav-item submenu dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-haspopup="true" aria-expanded="false">Your Dasboard</a>
@@ -86,9 +86,11 @@
                                 {% endif %}
                             </ul>
                         </li>
+                        {% comment %}
                         <li class="nav-item">
                             <a class="nav-link" href="contact.html">Contact</a>
-                        </li>
+                        </li> 
+                        {% endcomment %}
                         
                         <li class="nav-item">
                             <a href="#" class="nav-link search" id="search">
